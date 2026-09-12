@@ -1,0 +1,30 @@
+[project]
+name = "coursework_1"
+version = "0.1.0"
+description = "Первая курсовая работа: анализ транзакций"
+authors = [
+    {name = "nnc-k", email = "katkova.a1997@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pandas (>=2.2.2)",
+    "openpyxl (>=3.1.2)",
+    "requests (>=2.32.3)",
+    "python-dotenv (>=1.0.1)",
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.2.0"
+flake8 = ">=7.0.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
