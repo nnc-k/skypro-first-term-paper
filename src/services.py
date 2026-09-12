@@ -124,7 +124,7 @@ def simple_search(df: pd.DataFrame, query: str) -> str:
 
 
 PHONE_PATTERN = re.compile(
-    r"(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}"
+    r"(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{2,3}[\s\-]?\d{2}[\s\-]?\d{2}"
 )
 
 
