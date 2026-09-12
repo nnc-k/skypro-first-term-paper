@@ -221,3 +221,8 @@ __marimo__/
 # Настройки PyCharm / JetBrains
 .idea/
 *.iml
+
+# Данные (не коммитим реальные транзакции)
+data/*.xlsx
+data/*.xls
+!data/.gitkeep
