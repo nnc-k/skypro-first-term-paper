@@ -226,4 +226,4 @@ __marimo__/
 data/*.xlsx
 data/*.xls
 !data/.gitkeep
-!env_template
+!.env_template
