@@ -72,15 +72,11 @@ def _parse_date(date: Optional[str]) -> datetime:
     return datetime.strptime(date, "%d.%m.%Y")
 
 
-def _filter_last_3_months(
-    df: pd.DataFrame, date: Optional[str]
-) -> pd.DataFrame:
+def _filter_last_3_months(df: pd.DataFrame, date: Optional[str]) -> pd.DataFrame:
     """Оставляет транзакции за последние 3 месяца от указанной даты."""
     end = _parse_date(date)
     start = end - timedelta(days=90)
-    return df[
-        (df["Дата операции"] >= start) & (df["Дата операции"] <= end)
-    ].copy()
+    return df[(df["Дата операции"] >= start) & (df["Дата операции"] <= end)].copy()
 
 
 def _only_expenses(df: pd.DataFrame) -> pd.DataFrame:
@@ -94,9 +90,7 @@ def _only_expenses(df: pd.DataFrame) -> pd.DataFrame:
 
 
 @report_to_file()
-def spending_by_category(
-    df: pd.DataFrame, category: str, date: Optional[str] = None
-) -> pd.DataFrame:
+def spending_by_category(df: pd.DataFrame, category: str, date: Optional[str] = None) -> pd.DataFrame:
     """Траты по заданной категории за последние 3 месяца.
 
     :param df: DataFrame с транзакциями
@@ -126,9 +120,7 @@ WEEKDAY_RU = {
 
 
 @report_to_file()
-def spending_by_weekday(
-    df: pd.DataFrame, date: Optional[str] = None
-) -> pd.DataFrame:
+def spending_by_weekday(df: pd.DataFrame, date: Optional[str] = None) -> pd.DataFrame:
     """Средние траты по каждому дню недели за последние 3 месяца.
 
     :param df: DataFrame с транзакциями
@@ -143,16 +135,9 @@ def spending_by_weekday(
         return pd.DataFrame(columns=["weekday", "average_spending"])
 
     expenses["weekday_en"] = expenses["Дата операции"].dt.day_name()
-    grouped = (
-        expenses.groupby("weekday_en")["Сумма платежа"]
-        .mean()
-        .round(2)
-        .reset_index()
-    )
+    grouped = expenses.groupby("weekday_en")["Сумма платежа"].mean().round(2).reset_index()
     grouped["weekday"] = grouped["weekday_en"].map(WEEKDAY_RU)
-    result = grouped[["weekday", "Сумма платежа"]].rename(
-        columns={"Сумма платежа": "average_spending"}
-    )
+    result = grouped[["weekday", "Сумма платежа"]].rename(columns={"Сумма платежа": "average_spending"})
     return result
 
 
@@ -160,9 +145,7 @@ def spending_by_weekday(
 
 
 @report_to_file()
-def spending_by_workday(
-    df: pd.DataFrame, date: Optional[str] = None
-) -> pd.DataFrame:
+def spending_by_workday(df: pd.DataFrame, date: Optional[str] = None) -> pd.DataFrame:
     """Средние траты в рабочие и выходные дни за последние 3 месяца.
 
     :param df: DataFrame с транзакциями
@@ -177,16 +160,7 @@ def spending_by_workday(
         return pd.DataFrame(columns=["day_type", "average_spending"])
 
     expenses["is_weekend"] = expenses["Дата операции"].dt.weekday >= 5
-    grouped = (
-        expenses.groupby("is_weekend")["Сумма платежа"]
-        .mean()
-        .round(2)
-        .reset_index()
-    )
-    grouped["day_type"] = grouped["is_weekend"].map(
-        {True: "Выходной", False: "Рабочий"}
-    )
-    result = grouped[["day_type", "Сумма платежа"]].rename(
-        columns={"Сумма платежа": "average_spending"}
-    )
+    grouped = expenses.groupby("is_weekend")["Сумма платежа"].mean().round(2).reset_index()
+    grouped["day_type"] = grouped["is_weekend"].map({True: "Выходной", False: "Рабочий"})
+    result = grouped[["day_type", "Сумма платежа"]].rename(columns={"Сумма платежа": "average_spending"})
     return result

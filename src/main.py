@@ -100,9 +100,7 @@ def main() -> None:
     print("=" * 80)
     print("ОТЧЁТ: ТРАТЫ ПО КАТЕГОРИИ 'Супермаркеты'")
     print("=" * 80)
-    report_category = spending_by_category(
-        df, "Супермаркеты", date="20.12.2021"
-    )
+    report_category = spending_by_category(df, "Супермаркеты", date="20.12.2021")
     print(report_category.to_string(index=False))
 
     print()

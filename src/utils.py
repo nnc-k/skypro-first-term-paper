@@ -4,7 +4,7 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 import pandas as pd
 import requests
@@ -44,7 +44,8 @@ def load_user_settings(path: str = "user_settings.json") -> dict[str, Any]:
     """Загружает пользовательские настройки (валюты, акции)."""
     logger.info("Загрузка настроек из %s", path)
     with open(path, "r", encoding="utf-8") as file:
-        return json.load(file)
+        data = json.load(file)
+        return cast(dict[str, Any], data)
 
 
 def get_greeting(dt: datetime) -> str:
@@ -63,9 +64,7 @@ def get_currency_rates(currencies: list[str]) -> list[dict[str, Any]]:
     """Курсы валют к рублю через API ЦБ РФ."""
     result: list[dict[str, Any]] = []
     try:
-        response = requests.get(
-            "https://www.cbr-xml-daily.ru/daily_json.js", timeout=10
-        )
+        response = requests.get("https://www.cbr-xml-daily.ru/daily_json.js", timeout=10)
         response.raise_for_status()
         data = response.json().get("Valute", {})
 
@@ -73,9 +72,7 @@ def get_currency_rates(currencies: list[str]) -> list[dict[str, Any]]:
             if code in data:
                 rate = data[code].get("Value")
                 if isinstance(rate, (int, float)) and rate > 0:
-                    result.append(
-                        {"currency": code, "rate": round(float(rate), 2)}
-                    )
+                    result.append({"currency": code, "rate": round(float(rate), 2)})
     except requests.RequestException as exc:
         logger.error("Ошибка получения курсов валют: %s", exc)
     except (ValueError, KeyError) as exc:
@@ -99,10 +96,7 @@ def get_stock_prices(stocks: list[str]) -> list[dict[str, Any]]:
 
     for ticker in stocks:
         try:
-            url = (
-                f"https://finnhub.io/api/v1/quote"
-                f"?symbol={ticker}&token={api_key}"
-            )
+            url = f"https://finnhub.io/api/v1/quote" f"?symbol={ticker}&token={api_key}"
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             data = response.json()

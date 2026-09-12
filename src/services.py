@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 # ---------------------- Кешбэк-категории ----------------------
 
 
-def cashback_categories(
-    df: pd.DataFrame, year: int, month: int
-) -> str:
+def cashback_categories(df: pd.DataFrame, year: int, month: int) -> str:
     """Анализирует, сколько на каждой категории можно заработать кешбэка.
 
     :param df: DataFrame с транзакциями
@@ -30,9 +28,7 @@ def cashback_categories(
     """
     logger.info("Анализ кешбэка за %d-%02d", year, month)
 
-    mask = (df["Дата операции"].dt.year == year) & (
-        df["Дата операции"].dt.month == month
-    )
+    mask = (df["Дата операции"].dt.year == year) & (df["Дата операции"].dt.month == month)
     period = df[mask & (df["Сумма платежа"] < 0)].copy()
     period["Сумма платежа"] = period["Сумма платежа"].abs()
 
@@ -44,20 +40,14 @@ def cashback_categories(
         return round(amount / 100, 2)
 
     # map через apply, sort_values — по убыванию
-    result = (
-        grouped.apply(to_cashback)
-        .sort_values(ascending=False)
-        .to_dict()
-    )
+    result = grouped.apply(to_cashback).sort_values(ascending=False).to_dict()
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
 # ---------------------- Инвесткопилка ----------------------
 
 
-def investment_bank(
-    month: str, transactions: list[dict[str, Any]], limit: int
-) -> float:
+def investment_bank(month: str, transactions: list[dict[str, Any]], limit: int) -> float:
     """Считает сумму, которую удалось бы отложить в «Инвесткопилку».
 
     :param month: месяц в формате 'YYYY-MM'
@@ -114,18 +104,14 @@ def simple_search(df: pd.DataFrame, query: str) -> str:
     """
     logger.info("Простой поиск: %s", query)
     q = query.lower()
-    mask = df["Описание"].str.lower().str.contains(q, na=False) | df[
-        "Категория"
-    ].str.lower().str.contains(q, na=False)
+    mask = df["Описание"].str.lower().str.contains(q, na=False) | df["Категория"].str.lower().str.contains(q, na=False)
     return _df_to_json(df[mask])
 
 
 # ---------------------- Поиск телефонов ----------------------
 
 
-PHONE_PATTERN = re.compile(
-    r"(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{2,3}[\s\-]?\d{2}[\s\-]?\d{2}"
-)
+PHONE_PATTERN = re.compile(r"(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{2,3}[\s\-]?\d{2}[\s\-]?\d{2}")
 
 
 def search_phone_numbers(df: pd.DataFrame) -> str:
@@ -138,9 +124,7 @@ def search_phone_numbers(df: pd.DataFrame) -> str:
     descriptions = df["Описание"].astype(str)
 
     # Функциональный подход: filter через map + list comprehension
-    mask = descriptions.map(
-        lambda text: bool(PHONE_PATTERN.search(text))
-    )
+    mask = descriptions.map(lambda text: bool(PHONE_PATTERN.search(text)))
     return _df_to_json(df[mask])
 
 
@@ -159,7 +143,5 @@ def search_transfers(df: pd.DataFrame) -> str:
     logger.info("Поиск переводов физлицам")
     descriptions = df["Описание"].astype(str)
 
-    mask = (df["Категория"] == "Переводы") & descriptions.map(
-        lambda text: bool(TRANSFER_PATTERN.search(text))
-    )
+    mask = (df["Категория"] == "Переводы") & descriptions.map(lambda text: bool(TRANSFER_PATTERN.search(text)))
     return _df_to_json(df[mask])

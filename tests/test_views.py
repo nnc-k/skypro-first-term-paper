@@ -186,13 +186,9 @@ def test_get_income_block(sample_df: pd.DataFrame) -> None:
 
 @patch("src.views.get_stock_prices", return_value=[])
 @patch("src.views.get_currency_rates", return_value=[])
-def test_main_page_structure(
-    _mock_curr, _mock_stock, sample_df: pd.DataFrame, settings: dict
-) -> None:
+def test_main_page_structure(_mock_curr, _mock_stock, sample_df: pd.DataFrame, settings: dict) -> None:
     """Проверяет структуру JSON-ответа main_page."""
-    result = json.loads(
-        main_page("2021-12-20 12:00:00", sample_df, settings)
-    )
+    result = json.loads(main_page("2021-12-20 12:00:00", sample_df, settings))
     assert "greeting" in result
     assert "cards" in result
     assert "top_transactions" in result
@@ -206,13 +202,9 @@ def test_main_page_structure(
 
 @patch("src.views.get_stock_prices", return_value=[])
 @patch("src.views.get_currency_rates", return_value=[])
-def test_events_page_structure(
-    _mock_curr, _mock_stock, sample_df: pd.DataFrame, settings: dict
-) -> None:
+def test_events_page_structure(_mock_curr, _mock_stock, sample_df: pd.DataFrame, settings: dict) -> None:
     """Проверяет структуру JSON-ответа events_page."""
-    result = json.loads(
-        events_page("2021-12-20 12:00:00", sample_df, settings, "M")
-    )
+    result = json.loads(events_page("2021-12-20 12:00:00", sample_df, settings, "M"))
     assert "expenses" in result
     assert "income" in result
     assert "currency_rates" in result

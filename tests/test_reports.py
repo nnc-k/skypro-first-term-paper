@@ -1,8 +1,7 @@
 """Тесты для модуля src.reports."""
 
 import json
-import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas as pd
 import pytest
@@ -146,36 +145,26 @@ def test_report_to_file_with_dataframe(tmp_path, monkeypatch) -> None:
 # ---------------------- spending_by_category ----------------------
 
 
-def test_spending_by_category_found(
-    sample_df: pd.DataFrame, tmp_path, monkeypatch
-) -> None:
+def test_spending_by_category_found(sample_df: pd.DataFrame, tmp_path, monkeypatch) -> None:
     """Траты по категории Супермаркеты."""
     monkeypatch.chdir(tmp_path)
-    result = spending_by_category(
-        sample_df, "Супермаркеты", date="20.12.2021"
-    )
+    result = spending_by_category(sample_df, "Супермаркеты", date="20.12.2021")
     assert isinstance(result, pd.DataFrame)
     assert len(result) == 3
     assert all(result["Категория"] == "Супермаркеты")
 
 
-def test_spending_by_category_empty(
-    sample_df: pd.DataFrame, tmp_path, monkeypatch
-) -> None:
+def test_spending_by_category_empty(sample_df: pd.DataFrame, tmp_path, monkeypatch) -> None:
     """Несуществующая категория — пустой результат."""
     monkeypatch.chdir(tmp_path)
-    result = spending_by_category(
-        sample_df, "Несуществующая", date="20.12.2021"
-    )
+    result = spending_by_category(sample_df, "Несуществующая", date="20.12.2021")
     assert len(result) == 0
 
 
 # ---------------------- spending_by_weekday ----------------------
 
 
-def test_spending_by_weekday(
-    sample_df: pd.DataFrame, tmp_path, monkeypatch
-) -> None:
+def test_spending_by_weekday(sample_df: pd.DataFrame, tmp_path, monkeypatch) -> None:
     """Средние траты по дням недели."""
     monkeypatch.chdir(tmp_path)
     result = spending_by_weekday(sample_df, date="20.12.2021")
@@ -185,9 +174,7 @@ def test_spending_by_weekday(
     assert len(result) > 0
 
 
-def test_spending_by_weekday_empty(
-    tmp_path, monkeypatch
-) -> None:
+def test_spending_by_weekday_empty(tmp_path, monkeypatch) -> None:
     """Пустой DataFrame — пустой результат."""
     monkeypatch.chdir(tmp_path)
     empty_df = pd.DataFrame(
@@ -205,9 +192,7 @@ def test_spending_by_weekday_empty(
 # ---------------------- spending_by_workday ----------------------
 
 
-def test_spending_by_workday(
-    sample_df: pd.DataFrame, tmp_path, monkeypatch
-) -> None:
+def test_spending_by_workday(sample_df: pd.DataFrame, tmp_path, monkeypatch) -> None:
     """Средние траты в рабочий и выходной день."""
     monkeypatch.chdir(tmp_path)
     result = spending_by_workday(sample_df, date="20.12.2021")
@@ -219,9 +204,7 @@ def test_spending_by_workday(
     assert "Выходной" in types
 
 
-def test_spending_by_workday_empty(
-    tmp_path, monkeypatch
-) -> None:
+def test_spending_by_workday_empty(tmp_path, monkeypatch) -> None:
     """Пустой DataFrame — пустой результат."""
     monkeypatch.chdir(tmp_path)
     empty_df = pd.DataFrame(
