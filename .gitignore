@@ -226,3 +226,7 @@ __marimo__/
 data/*.xlsx
 data/*.xls
 !data/.gitkeep
+!.env_template
+
+# Отчёты, генерируются при запуске
+*_report.json
